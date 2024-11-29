@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+
+    <!-- <script src="https://plugin.openpix.com.br/v1/openpix.js" async>
+    </script> -->
+    <title>Demo ClickPix</title>
+  </head>
+  <body>
+    <p>Hállex Costa</p>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+
+        const product = document.querySelector('[data-product-id="1"]')
+      console.log("Modificações no DOM concluídas");
+
+        // document.querySelector('[data-clickpix=""]').dataset.appid = 'Q2xpZW50X0lkXzAyOGQzMmQ1LTEwMmEtNGE0Yy1iZTMzLTQzY2I3NmRmNjg3YzpDbGllbnRfU2VjcmV0X0hWbzN0R2dxSC9PQTh2RWxKeEhwVlRwSG9RRkpXY0dJdlVCUFRNQ3cwNzQ9'
+        // document.querySelector('[data-clickpix=""]').dataset.appid = 'Q2xpZW50X0lkXzBlMWViOWEzLWI4MzktNGRkMy1iOWNmLTI3MGFhOWZlNzEwNzpDbGllbnRfU2VjcmV0X2kzNTdMdlZ2MVlXaEViNm5FYzIzcVNpZ09hZXpKeFJkL2EzR0ZZMVJodkE9'
+
+        const inject = (onload = () => {}) => {
+          const script = document.createElement("script");
+          script.src = "https://plugin.openpix.com.br/v1/openpix.js";
+          script.async = true;
+          script.onload = onload
+          document.head.appendChild(script);
+        }
+        inject()
+
+
+        function reloadPlugin(onloadWooviPlugin) {
+          const oldScript = document.querySelector('[src="https://plugin.openpix.com.br/v1/openpix.js"]')
+          if (oldScript) oldScript.remove()
+
+          inject(onloadWooviPlugin)
+        }
+
+        const getOrderId = () => {
+          // creating order id
+          return 321
+        }
+
+
+        const createOrderWC = (wcOrder) => {
+          let stopPropagation = true
+
+          const product = document.querySelector('[data-product-id="1"]')
+          const orderId = getOrderId()
+          
+          if (orderId) {
+            console.log('success create draft order in woocommerce', )
+            // product.dataset.additionalInfo = `orderId:${orderId},${product.dataset.additionalInfo}`
+            // product.dataset.value = 5000
+            // product.addEventListener('click', (e) => {
+            //   if (stopPropagation) {
+            //     e.stopPropagation()
+            //   }
+            // }, true)
+
+            // setTimeout(() => {
+            //   console.log('stopping propagation while update charge data')
+
+            //   reloadPlugin(() => {
+            //     // alert(`second inject ${product.dataset.value}`)
+            //     stopPropagation = false
+            //     console.log({product, stopPropagation})
+            //   })
+            // }, 4000)
+            return {
+              ok: true,
+              data: {
+                orderId
+              }
+            }
+          }
+
+          return {
+            ok: false,
+            data: {
+              orderId: null
+            }
+          }
+        }
+
+        // reloadPlugin(() => {
+        //   const productReloaded = document.querySelector('[data-product-id="1"]')
+        //   console.log(`first inject ${productReloaded.dataset.value}`)
+        //   // productReloaded.dataset.value = 5000
+        //   console.log({productReloaded})
+
+        //   setTimeout(() => {
+        //     createOrderWC()
+        //   },5000)
+        // })
+
+        // let stopPropagation = false
+        // document.querySelector('[data-clickpix][data-product-id="1"]').addEventListener('click', () => {
+        //   stopPropagation = true
+        //   alert('testando 1')
+        // }, false)
+        // setTimeout(() => {
+        //   const wooviButton = document.querySelector('[data-clickpix][data-product-id="1"] button')
+        //   const beforeClick = wooviButton.click.bind(wooviButton)
+        //   wooviButton.addEventListener('click', (e) => {
+        //     if (stopPropagation) e.stopPropagation()
+
+        //     console.log('stopping parent propagation')            
+        //     beforeClick()
+        //     stopPropagation = false
+        //     console.log({stopPropagation})
+        //   }, true)
+        //   wooviButton.click()
+        // }, 3000)
+
+
+        Array.from(document.querySelectorAll('[data-clickpix]'), (clickpix) => {
+          console.log(clickpix)
+          clickpix.addEventListener('click', (e) => {
+            console.log('actioned')
+            let stopPropagation = true
+            
+            if (stopPropagation) e.stopPropagation()
+
+            let response = {
+              ok: false
+            }
+
+            console.log(clickpix.dataset.additionalInfo)
+            if (!clickpix.dataset.additionalInfo.includes('orderId')) {
+              response = createOrderWC({
+                productId: clickpix.dataset.productId,
+                value: clickpix.dataset.value,
+                customer: {
+                  email: null,
+                  phone: null,
+                  address: null
+                },
+                status: 'wc-processing',
+                type: 'clickpix'
+              })
+            }
+            console.log({response})
+
+            if (response.ok) {
+              clickpix.dataset.additionalInfo = `orderId:${response.data.orderId},${clickpix.dataset.additionalInfo}`
+
+              console.log({clickPixOrderId: clickpix.dataset.additionalInfo})
+
+              reloadPlugin(() => {
+                const clickpixQuerySelectorId = `[data-clickpix][data-product-id="${clickpix.dataset.productId}"] button`
+                const wooviButton = document.querySelector(clickpixQuerySelectorId)
+                
+                if (wooviButton) {
+                  console.log('execution original woovi onclick')
+                  const originalClickHandler = wooviButton.onclick.bind(wooviButton);
+                  // clickpix.onclick = () => console.log('overwrite onclick event')
+                  wooviButton.onclick = (e) => {
+                    e.stopPropagation()
+                    originalClickHandler(e)
+                    e.stopImmediatePropagation()
+                  }
+                  wooviButton.click()
+                }
+              })
+            }
+
+          }, true)
+        })
+      });
+    </script>
+
+    <div id="root">
+      <div 
+        data-clickpix 
+        data-appid="Q2xpZW50X0lkXzBlMWViOWEzLWI4MzktNGRkMy1iOWNmLTI3MGFhOWZlNzEwNzpDbGllbnRfU2VjcmV0X2kzNTdMdlZ2MVlXaEViNm5FYzIzcVNpZ09hZXpKeFJkL2EzR0ZZMVJodkE9"
+        data-variant="green"
+        data-customer-fields="phone,email,address"
+        data-additional-info="chargeType:clickpix,product:123"
+        data-value="001"
+        data-product-id="1"
+      ></div>
+
+      <div 
+        data-clickpix 
+        data-appid="Q2xpZW50X0lkXzBlMWViOWEzLWI4MzktNGRkMy1iOWNmLTI3MGFhOWZlNzEwNzpDbGllbnRfU2VjcmV0X2kzNTdMdlZ2MVlXaEViNm5FYzIzcVNpZ09hZXpKeFJkL2EzR0ZZMVJodkE9"
+        data-variant="green"
+        data-customer-fields="phone,email,address"
+        data-additional-info="chargeType:clickpix,product:123"
+        data-value="008"
+        data-product-id="2"
+      ></div>
+    </div>
+    <!-- document.querySelector('[data-product-id="1"] [data-testid="woovi-pay-button"]').click() -->
+
+  </body>
+</html>

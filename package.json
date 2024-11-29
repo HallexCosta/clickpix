@@ -1,0 +1,14 @@
+{
+	"name": "clickpix-poc",
+	"author": {
+		"email": "hallex.costa@hotmail.com",
+		"name": "@hallexcosta",
+		"url": "https://hallexcosta.com/clickpix"
+	},
+	"scripts": {
+		"dev": "pnpm http-server -w -p 8084 ."
+	},
+	"devDependencies": {
+		"http-server": "^14.1.1"
+	}
+}

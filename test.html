@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Demo OpenPix Plugin</title>
+  </head>
+
+  <body>
+    <div 
+      data-clickpix 
+      data-appid="Q2xpZW50X0lkXzBlMWViOWEzLWI4MzktNGRkMy1iOWNmLTI3MGFhOWZlNzEwNzpDbGllbnRfU2VjcmV0X2kzNTdMdlZ2MVlXaEViNm5FYzIzcVNpZ09hZXpKeFJkL2EzR0ZZMVJodkE9"
+      data-variant="green"
+      data-customer-fields="phone,email,address"
+      data-additional-info="chargeType:clickpix,product:123"
+      data-value="001"
+      data-product-id="1"
+    ></div>
+    
+    <script src="https://plugin.openpix.com.br/v1/openpix.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const inject = (onload = () => {}) => {
+          const script = document.createElement("script");
+          script.src = "https://plugin.openpix.com.br/v1/openpix.js";
+          script.async = true;
+          script.onload = onload
+          document.body.appendChild(script);
+        }
+        
+
+
+        function reloadPlugin(onloadWooviPlugin) {
+          console.log('reload plugin')
+          const oldScript = document.querySelector('[src="https://plugin.openpix.com.br/v1/openpix.js"]')
+          if (oldScript) oldScript.remove()
+
+          inject(onloadWooviPlugin)
+        }
+
+        const createOrder = () => {
+          console.log('create draft')
+          return 'order-hállex-id'
+        }
+        
+        const addOrderId = (productId, orderId = 'someOrderId') => {
+          const btn = document.querySelector(`[data-product-id="${productId}"]`)
+          btn.dataset.additionalInfo = `orderId:${orderId},${btn.dataset.additionalInfo}`
+          return orderId
+        }
+
+        const memory = {}
+        
+        document.querySelector('[data-product-id="1"]').addEventListener('click', function(e) {
+            const clickpix = document.querySelector(`[data-product-id="1"]`)
+            console.log(clickpix.dataset.additionalInfo)
+            const productId = clickpix.dataset.productId
+
+
+            if (!clickpix.dataset.additionalInfo.includes('orderId')) {
+              e.stopPropagation()
+
+              const orderId = addOrderId(productId, 'someOrderId')
+
+              if (!memory[productId])
+                memory[productId] = orderId
+
+              
+              this.querySelector('button').setAttribute('disabled', '')
+              reloadPlugin(() => {
+                this.querySelector('button').removeAttribute('disabled', '')
+                console.log(this, this.querySelector('button'))
+                setTimeout(() => this.querySelector('button').click(), 1000)
+              })
+            }
+          }, true)
+      })
+    </script>
+  </body>
+</html>
