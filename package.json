@@ -1,17 +1,19 @@
 {
-	"name": "clickpix-poc",
-	"author": {
-		"email": "hallex.costa@hotmail.com",
-		"name": "@hallexcosta",
-		"url": "https://hallexcosta.com/clickpix"
-	},
-	"scripts": {
-		"dev": "pnpm http-server -w -p 8084 ."
-	},
-	"devDependencies": {
-		"@types/react": "^18.3.12",
-		"http-server": "^14.1.1",
-		"typescript": "^5.7.2",
-		"@types/react-dom": "^18.3.1"
-	}
+  "name": "clickpix-poc",
+  "author": {
+    "email": "hallex.costa@hotmail.com",
+    "name": "@hallexcosta",
+    "url": "https://hallexcosta.com/clickpix"
+  },
+  "scripts": {
+    "dev": "http-server -w -p 8084 .",
+    "format": "biome format"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "http-server": "^14.1.1",
+    "typescript": "^5.7.2"
+  }
 }
