@@ -295,7 +295,7 @@
             const response = await fetch('http://localhost:3001/wp-json/openpix/v1/woocommerce/create-order-clickpix', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json', // Certifique-se de definir o tipo de conteúdo
+                'Content-Type': 'application/json',
               },
               body: JSON.stringify({
                 price: memoryOrder.value,
