@@ -504,7 +504,7 @@
     <div 
       class="clickpix"
       data-value="200" 
-      data-additional-info="chargeType:clickpix,product:123" 
+      data-additional-info="chargeType:clickpix" 
       data-variant="green"
       data-customer-fields="phone,email,address"
       data-product-id="1"
@@ -522,7 +522,7 @@
     <div 
       class="clickpix"
       data-value="600" 
-      data-additional-info="chargeType:clickpix,product:123" 
+      data-additional-info="chargeType:clickpix" 
       data-variant="green"
       data-customer-fields="phone,email,address"
       data-product-id="2"
@@ -592,7 +592,6 @@
           return promise
 
         }
-        
 
         document.addEventListener('DOMContentLoaded', () => {
           window.$openpixSDK.addEvent('beforeCreateCharge', async (nextFn, states, productId) => {
@@ -613,14 +612,13 @@
               ...oldProductOrder,
               orderId,
               comment: `WooCoommerce #${orderId}`,
-              additionalInfo: `orderId:${order.orderId},${oldProductOrder.additionalInfo}`,
+              additionalInfo: `orderId:${order.orderId},productId:${order.productId},${oldProductOrder.additionalInfo}`,
               productId
             })
 
             console.log('calling nextFn')
             return nextFn()
           })
-
 
           openpix.init()
         })
