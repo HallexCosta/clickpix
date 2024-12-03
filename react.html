@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.19.3/babel.js"></script>
+    <script data-plugins="transform-modules-umd" type="text/babel" data-presets="react" data-type="module" src="Something.js"></script>
+  </head>
+  <body>
+    <div id="root-box"></div>
+    <script data-plugins="transform-modules-umd" type="text/babel" data-presets="react" data-type="module">
+      import { Something } from "./Something.js";
+      ReactDOM.createRoot(document.getElementById("root-box")).render(
+        <Something />
+      );
+    </script>
+  </body>
+</html>

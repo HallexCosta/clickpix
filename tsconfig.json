@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"types": ["react"],
+		"baseUrl": ".",
+		"paths": {
+			"https://unpkg.com/react@18.3.1/umd/react.development.js": [
+				"./node_modules/@types/react/*"
+			],
+			"https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js": [
+				"./node_modules/@types/react-dom/*"
+			]
+		}
+	}
+}

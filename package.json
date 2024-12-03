@@ -9,6 +9,9 @@
 		"dev": "pnpm http-server -w -p 8084 ."
 	},
 	"devDependencies": {
-		"http-server": "^14.1.1"
+		"@types/react": "^18.3.12",
+		"http-server": "^14.1.1",
+		"typescript": "^5.7.2",
+		"@types/react-dom": "^18.3.1"
 	}
 }
